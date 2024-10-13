@@ -11,6 +11,7 @@ import wave  # Added for audio recording
 from prompt import ASSISTANT_INSTRUCTIONS
 from config import get_settings
 from loguru import logger
+import time
 
 
 # Load environment variables from .env file
@@ -57,6 +58,8 @@ def send_microphone_audio_to_websocket(websocket):
             if not microphone_queue.empty():
                 audio_chunk = microphone_queue.get()
                 encoded_audio = base64.b64encode(audio_chunk).decode("utf-8")
+                timestamp = time.time()
+ 
                 message = json.dumps(
                     {"type": "input_audio_buffer.append", "audio": encoded_audio}
                 )
@@ -124,6 +127,16 @@ def receive_from_websocket(websocket):
                 #     logger.success(f"Received WebSocket message: {message_data}")
 
                 event_type = message_data.get("type", "")
+                        # Track the start of speech
+                if event_type == "input_audio_buffer.committed":
+                    speech_start_time = time.time()
+                    logger.debug("Speech started, tracking latency.")
+                
+                # Final event to calculate latency
+                if event_type == "response.audio_transcript.done" and speech_start_time is not None:
+                    latency = time.time() - speech_start_time
+                    print(f"Round-trip latency from speech start to transcript done: {latency:.3f} seconds")
+                    speech_start_time = None  # Reset after measurement
 
                 # if event_type != "error":
                 #     logger.debug(f"Received WebSocket event: {event_type}")
@@ -133,7 +146,6 @@ def receive_from_websocket(websocket):
                 #     logger.debug(f"Conversation item created: {message_data}")
                 #     transcript = message_data.get("transcript", "")
                 #     logger.info(f"User said: {transcript}")
-
                 if event_type == "response.audio_transcript.done":
                     transcript = message_data.get("transcript", "")
                     logger.success(f"ChatGPT said: {transcript}")
