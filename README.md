@@ -9,9 +9,11 @@ This project connects to the OpenAI WebSocket API to send and receive real-time 
 
 ### Requirements:
 Ensure the following dependencies are installed and set:
+1.	Create a .env file in the project root and add your OpenAI API key:
 ```bash
-export OPENAI_API_KEY=your_openai_api_key
+OPENAI_API_KEY=your_openai_api_key
 ```
+2.	Run the bellow command
 ```bash
 uv venv
 source .venv/bin/activate;source .env
