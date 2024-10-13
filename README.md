@@ -15,4 +15,4 @@ source .venv/bin/activate;source .env
 uv pip install pyaudio websocket-client python-dotenv loguru pydantic
 uv sync
 uv run main.py
-```# openai_realtime_api_chatbot
+```
