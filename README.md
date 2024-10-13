@@ -8,7 +8,10 @@ This project connects to the OpenAI WebSocket API to send and receive real-time 
 - **Threads**: Utilizes threading to handle real-time audio input/output and WebSocket communication concurrently.
 
 ### Requirements:
-Ensure the following dependencies are installed:
+Ensure the following dependencies are installed and set:
+```bash
+export OPENAI_API_KEY=your_openai_api_key
+```
 ```bash
 uv venv
 source .venv/bin/activate;source .env
